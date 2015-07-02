@@ -3,7 +3,11 @@
 
 This project lets you use the undocumented flags of the App Engine Images service URLs to serve transformed images.
 
-## Usage
+## Documentation
+
+[![GoDoc](https://godoc.org/github.com/ernestoalejo/aeimagesflags?status.svg)](https://godoc.org/github.com/ernestoalejo/aeimagesflags)
+
+## Usage example
 
 ```go
 package example
