@@ -3,6 +3,36 @@
 
 This project lets you use the undocumented flags of the App Engine Images service URLs to serve transformed images.
 
+## Usage
+
+```go
+package example
+
+import (
+  "fmt"
+
+  "github.com/ernestoalejo/aeimagesflags"
+  "google.golang.org/appengine"
+  "google.golang.org/appengine/images"
+)
+
+func demo(blobKey appengine.BlobKey) error {
+  url, err := images.CreateServingURL(blobKey, nil)
+  if err != nil {
+    return err
+  }
+
+  flags := aeimagesflags.Flags{
+    Width: 300,
+    Height: 100,
+    Crop: true,
+  }
+  fmt.Println(aeimagesflags.Apply(url.String(), flags))
+
+  return nil
+}
+```
+
 ## License
 
 ```
