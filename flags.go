@@ -77,7 +77,7 @@ type Flags struct {
 	BorderGradientSize uint64
 
 	// Color of the border gradient
-	BorderGradientColor color.RGB
+	BorderGradientColor color.RGBA
 }
 
 // Apply takes the serving URL (generated using appengine/images.ServingURL)
@@ -106,6 +106,9 @@ func Apply(URL string, flags Flags) string {
 	}
 	if flags.Blur > 100 {
 		panic("cannot blur more than 100% percent")
+	}
+	if flags.BorderGradientColor.A > 0 {
+		panic("do not fill border gradient color alpha; it is not used")
 	}
 
 	serialized := []string{}
@@ -184,7 +187,7 @@ func Apply(URL string, flags Flags) string {
 	if flags.Blur > 0 {
 		serialized = append(serialized, fmt.Sprintf("fSoften=1,%d,0:", flags.Blur))
 	}
-	if flag.BorderGradientSize > 0 {
+	if flags.BorderGradientSize > 0 {
 		color := fmt.Sprintf("%x%x%x%x", flags.BorderGradientColor.R, flags.BorderGradientColor.G, flags.BorderGradientColor.B)
 		color = strings.ToLower(color)
 		serialized = append(serialized, fmt.Sprintf("fVignette=1,%d,1.4,0,%s", flags.BorderGradientSize, color))
