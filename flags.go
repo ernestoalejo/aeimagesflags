@@ -69,6 +69,15 @@ type Flags struct {
 
 	// Change the quality of the JPEG output
 	JPEGQuality uint64
+
+	// Intensity of the blur (max 100)
+	Blur uint64
+
+	// Size of the border gradient
+	BorderGradientSize uint64
+
+	// Color of the border gradient
+	BorderGradientColor color.RGB
 }
 
 // Apply takes the serving URL (generated using appengine/images.ServingURL)
@@ -94,6 +103,9 @@ func Apply(URL string, flags Flags) string {
 	}
 	if active(flags.SmartSquareCrop, flags.SmartSquareCropFaces, flags.Crop, flags.CircularCrop, flags.SmallestCrop) > 1 {
 		panic("cannot activate several kinds of crop at the same time")
+	}
+	if flags.Blur > 100 {
+		panic("cannot blur more than 100% percent")
 	}
 
 	serialized := []string{}
@@ -156,9 +168,9 @@ func Apply(URL string, flags Flags) string {
 		serialized = append(serialized, fmt.Sprintf("b%d", flags.Border))
 	}
 	if flags.BorderColor.A > 0 || flags.BorderColor.R > 0 || flags.BorderColor.G > 0 || flags.BorderColor.B > 0 {
-		v := fmt.Sprintf("0x%x%x%x%x", flags.BorderColor.A, flags.BorderColor.R, flags.BorderColor.G, flags.BorderColor.B)
-		v = strings.ToLower(v)
-		serialized = append(serialized, v)
+		color := fmt.Sprintf("0x%x%x%x%x", flags.BorderColor.A, flags.BorderColor.R, flags.BorderColor.G, flags.BorderColor.B)
+		color = strings.ToLower(color)
+		serialized = append(serialized, color)
 	}
 	if flags.ForceDownload {
 		serialized = append(serialized, "d")
@@ -168,6 +180,14 @@ func Apply(URL string, flags Flags) string {
 	}
 	if flags.JPEGQuality > 0 {
 		serialized = append(serialized, fmt.Sprintf("l%d", flags.JPEGQuality))
+	}
+	if flags.Blur > 0 {
+		serialized = append(serialized, fmt.Sprintf("fSoften=1,%d,0:", flags.Blur))
+	}
+	if flag.BorderGradientSize > 0 {
+		color := fmt.Sprintf("%x%x%x%x", flags.BorderGradientColor.R, flags.BorderGradientColor.G, flags.BorderGradientColor.B)
+		color = strings.ToLower(color)
+		serialized = append(serialized, fmt.Sprintf("fVignette=1,%d,1.4,0,%s", flags.BorderGradientSize, color))
 	}
 
 	if len(serialized) == 0 {
