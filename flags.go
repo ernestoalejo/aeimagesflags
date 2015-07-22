@@ -32,7 +32,7 @@ type Flags struct {
 
 	CircularCrop bool
 
-	Crop bool
+	SquareCrop bool
 
 	// Crop to the smallest of: Width, Height or Size
 	SmallestCrop bool
@@ -101,7 +101,7 @@ func Apply(URL string, flags Flags) string {
 	if flags.SmartSquareCrop && flags.SmartSquareCropFaces {
 		panic("cannot activate two kinds of smart square crop at the same time")
 	}
-	if active(flags.SmartSquareCrop, flags.SmartSquareCropFaces, flags.Crop, flags.CircularCrop, flags.SmallestCrop) > 1 {
+	if active(flags.SmartSquareCrop, flags.SmartSquareCropFaces, flags.SquareCrop, flags.CircularCrop, flags.SmallestCrop) > 1 {
 		panic("cannot activate several kinds of crop at the same time")
 	}
 	if flags.Blur > 100 {
@@ -137,7 +137,7 @@ func Apply(URL string, flags Flags) string {
 	if flags.SmallestCrop {
 		serialized = append(serialized, "ci")
 	}
-	if flags.Crop {
+	if flags.SquareCrop {
 		serialized = append(serialized, "c")
 	}
 	if flags.VerticalFlip {
