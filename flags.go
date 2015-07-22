@@ -83,9 +83,6 @@ type Flags struct {
 // Apply takes the serving URL (generated using appengine/images.ServingURL)
 // and apply the flags to it returning the full URL to use.
 func Apply(URL string, flags Flags) string {
-	if (flags.SmartSquareCrop || flags.SmartSquareCropFaces) && (flags.Width != 0 || flags.Height != 0) {
-		panic("cannot combine square cropping with width or height")
-	}
 	if flags.JPEGQuality > 100 {
 		panic("jpeg quality cannot be bigger than 100")
 	}
