@@ -34,6 +34,10 @@ type Flags struct {
 
 	SquareCrop bool
 
+	// Like square crop but it's sometimes above the image half, like ~33% of the
+	// vertical height or so.
+	TranslatedSquareCrop bool
+
 	// Crop to the smallest of: Width, Height or Size
 	SmallestCrop bool
 
@@ -135,6 +139,9 @@ func Apply(URL string, flags Flags) string {
 		serialized = append(serialized, "ci")
 	}
 	if flags.SquareCrop {
+		serialized = append(serialized, "n")
+	}
+	if flags.TranslatedSquareCrop {
 		serialized = append(serialized, "c")
 	}
 	if flags.VerticalFlip {
